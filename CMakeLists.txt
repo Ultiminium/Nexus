@@ -4,20 +4,19 @@ project(Nexus)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# --- THE SPY SCRIPT ---
-message(STATUS "---------------------------------------------")
-message(STATUS ">>> DIAGNOSTIC: LISTING ALL SDK FILES <<<")
-message(STATUS "---------------------------------------------")
+# --- THE MANUAL IMPORT FIX ---
+# 1. Define where the SDK is (based on your logs)
+set(GEODE_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/geode-sdk-clone")
 
-# Run a Linux command to list every file inside the SDK folder
-execute_process(
-    COMMAND find . -maxdepth 4 -not -path '*/.*'
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/geode-sdk-clone"
-    OUTPUT_VARIABLE SDK_CONTENTS
+# 2. Add the SDK's 'cmake' folder to the list of places to look for scripts
+list(APPEND CMAKE_MODULE_PATH "${GEODE_SDK_PATH}/cmake")
+
+# 3. Manually include the Geode setup script
+# (This replaces find_package because the config file is missing)
+include(GeodeFile)
+
+# 4. Setup the mod using the function we just imported
+setup_geode_mod(
+	SOURCES
+	src/main.cpp
 )
-
-# Print the list to the log
-message(STATUS "${SDK_CONTENTS}")
-message(STATUS "---------------------------------------------")
-message(FATAL_ERROR "Stopping build intentionally to read logs.")
-# ----------------------
