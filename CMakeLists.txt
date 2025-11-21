@@ -4,18 +4,21 @@ project(Nexus)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# --- THE MANUAL IMPORT FIX ---
-# 1. Define where the SDK is (based on your logs)
+# --- THE COMPLETE MANUAL FIX ---
+# 1. Define where the SDK is
 set(GEODE_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/geode-sdk-clone")
 
-# 2. Add the SDK's 'cmake' folder to the list of places to look for scripts
+# 2. Add the SDK's 'cmake' folder to the path
 list(APPEND CMAKE_MODULE_PATH "${GEODE_SDK_PATH}/cmake")
 
-# 3. Manually include the Geode setup script
-# (This replaces find_package because the config file is missing)
-include(GeodeFile)
+# 3. INCLUDE PLATFORM FIRST (This fixes the "SOURCES" error)
+include("${GEODE_SDK_PATH}/cmake/Platform.cmake")
 
-# 4. Setup the mod using the function we just imported
+# 4. Then include the main Geode file
+include("${GEODE_SDK_PATH}/cmake/GeodeFile.cmake")
+# -------------------------------
+
+# 5. Now setup the mod
 setup_geode_mod(
 	SOURCES
 	src/main.cpp
